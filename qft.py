@@ -9,15 +9,20 @@ from qiskit.quantum_info import Statevector
 import numpy as np
 import sys
 
+
 def main():
-    inp = ['Amplitude spike |0001>',
-           'Amplitude spike |0010>',
-           'Uniform superposition with phase ramp, step size 2*pi*x*1 / 2**n',
-           'Uniform superposition with phase ramp, step size 2*pi*x*2 / 2**n']
-    out = ['Phase wave, phase increase 2*pi*k/(2**n) per step, k = 1',
-           'Phase wave, phase increase 2*pi*k/(2**n) per step, k = 2',
-           'Amplitude spike',
-           'Amplitude spike']
+    inp = [
+        "Amplitude spike |0001>",
+        "Amplitude spike |0010>",
+        "Uniform superposition with phase ramp, step size 2*pi*x*1 / 2**n",
+        "Uniform superposition with phase ramp, step size 2*pi*x*2 / 2**n",
+    ]
+    out = [
+        "Phase wave, phase increase 2*pi*k/(2**n) per step, k = 1",
+        "Phase wave, phase increase 2*pi*k/(2**n) per step, k = 2",
+        "Amplitude spike",
+        "Amplitude spike",
+    ]
     print(f"""
     Quantum Fourier Transformation (QFT) with n = 4 qubits and N = 16 states.
     The following input signals are available for demonstration (MSB left):
@@ -29,25 +34,25 @@ def main():
     idx_str = input(f"Provide your input as an index between 0 and {len(inp) - 1}: ")
     try:
         idx = int(idx_str)
-        assert(idx < len(inp))
+        assert idx < len(inp)
     except:
         print("Invalid input.")
         sys.exit(1)
 
-    n = 4 # Use n = 4, N = 16 for demonstration purposes
+    n = 4  # Use n = 4, N = 16 for demonstration purposes
 
     print(f"Chosen input: {inp[idx]}\nExpected Output: {out[idx]}\n")
-    
+
     qc = QuantumCircuit(n)
-    
+
     # Create input signal
-    s = create_input(n, idx);
+    s = create_input(n, idx)
     qc.compose(s, inplace=True)
 
     # Print input signals
     print(f"State vector of QFT input:")
     print_sv(qc)
-    
+
     # QFT
     qft = create_qft(n, swap=True)
     qc.compose(qft, inplace=True)
@@ -55,32 +60,35 @@ def main():
     # Print output signals
     print(f"\nState vector of QFT output:")
     print_sv(qc)
-    
+
+
 def create_qft(n: int, swap=False) -> QuantumCircuit:
 
     qft = QuantumCircuit(n)
     for i in reversed(range(n)):
         qft.h(i)
         for j in range(i):
-             qft.cp(2 * np.pi / (2 ** (i - j + 1)), j, i)
+            qft.cp(2 * np.pi / (2 ** (i - j + 1)), j, i)
 
     # swap qubits, if enabled
     if swap == False:
         return qft
-    for i in range(n // 2): # floor(n/2)
+    for i in range(n // 2):  # floor(n/2)
         qft.swap(i, n - i - 1)
     return qft
 
+
 def create_input(n: int, choice: int) -> QuantumCircuit:
     if choice == 0:
-        s = create_amplitude_spike(n, 0) # Set zero-th qubit for k = 1
+        s = create_amplitude_spike(n, 0)  # Set zero-th qubit for k = 1
     if choice == 1:
-        s = create_amplitude_spike(n, 1) # Set first qubit for k = 2
+        s = create_amplitude_spike(n, 1)  # Set first qubit for k = 2
     if choice == 2:
         s = create_phase_ramp(n, 1)
     if choice == 3:
         s = create_phase_ramp(n, 2)
     return s
+
 
 def create_phase_ramp(n: int, k: int) -> QuantumCircuit:
     s = QuantumCircuit(n)
@@ -96,18 +104,20 @@ def create_phase_ramp(n: int, k: int) -> QuantumCircuit:
 
     return s
 
+
 def create_amplitude_spike(n: int, k: int) -> QuantumCircuit:
     s = QuantumCircuit(n)
     s.x(k)
     return s
+
 
 def print_sv(qc: QuantumCircuit):
     sv = Statevector(qc)
     for i, amp in enumerate(sv.data):
         mag = np.abs(amp)
         phase = np.angle(amp) % (2 * np.pi)
-        print(f'|{i:04b}> (|{i:02d}>): |amp| = {mag:.3f}, phase = {phase:.3f}')
-    
+        print(f"|{i:04b}> (|{i:02d}>): |amp| = {mag:.3f}, phase = {phase:.3f}")
+
 
 if __name__ == "__main__":
     main()

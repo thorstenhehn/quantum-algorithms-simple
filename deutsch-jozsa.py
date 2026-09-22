@@ -8,11 +8,18 @@ from qiskit import *
 from qiskit.quantum_info import Statevector
 import sys
 
+
 def main():
-    chl = ['f(x0,x1) = 0',         'f(x0,x1) = 1',
-           'f(x0,x1) = x0',        'f(x0,x1) = x1',
-           'f(x0,x1) = not x0',    'f(x0,x1) = not x1',
-           'f(x0,x1) = x0 xor x1', 'f(x0,x1) = not(x0 xor x1)']
+    chl = [
+        "f(x0, x1) = 0",
+        "f(x0, x1) = 1",
+        "f(x0, x1) = x0",
+        "f(x0, x1) = x1",
+        "f(x0, x1) = not x0",
+        "f(x0, x1) = not x1",
+        "f(x0, x1) = x0 xor x1",
+        "f(x0, x1) = not(x0 xor x1)",
+    ]
     print(f"""
     The Deutsch-Jozsa algorithm will be challenged to classify a
     binary-input binary-output function. It will use only one
@@ -30,7 +37,7 @@ def main():
     c_str = input(f"Provide your input as an index between 0 and {len(chl) - 1}: ")
     try:
         c = int(c_str)
-        assert(c < len(chl))
+        assert c < len(chl)
     except:
         print("Invalid input.")
         sys.exit(1)
@@ -46,7 +53,7 @@ def main():
     qc.h(0)
     qc.h(1)
     qc.h(2)
-    
+
     # The oracle function serves as the quantum implementation of the function
     # provided in the challenge. Based on user's choice, we prepare the oracle
     # and include it into the circuit.
@@ -59,42 +66,43 @@ def main():
 
     sv = Statevector(qc)
     probs = sv.probabilities_dict()
-    
-    p00 = sum(v for k, v in probs.items() if k[-2:] == '00')  # first two qubits
+
+    p00 = sum(v for k, v in probs.items() if k[-2:] == "00")  # first two qubits
     if p00 > 0.99:
         print(f"Function {chl[c]} has constant output.")
     else:
         print(f"Function {chl[c]} has balanced output.")
 
 
-def create_oracle(challenge:int) -> QuantumCircuit:
+def create_oracle(challenge: int) -> QuantumCircuit:
     o = QuantumCircuit(3)
-    if challenge == 0:   #f(x0,x1) = 0
-        o.id(2)        
-    elif challenge == 1: #f(x0,x1) = 1
+    if challenge == 0:  # f(x0,x1) = 0
+        o.id(2)
+    elif challenge == 1:  # f(x0,x1) = 1
         o.x(2)
-    elif challenge == 2: #f(x0,x1) = x0
-        o.cx(0,2)
-    elif challenge == 3: #f(x0,x1) = x1
-        o.cx(1,2)
-    elif challenge == 4: #f(x0,x1) = not x0
+    elif challenge == 2:  # f(x0,x1) = x0
+        o.cx(0, 2)
+    elif challenge == 3:  # f(x0,x1) = x1
+        o.cx(1, 2)
+    elif challenge == 4:  # f(x0,x1) = not x0
         o.x(0)
-        o.cx(0,2)
+        o.cx(0, 2)
         o.x(0)
-    elif challenge == 5: #f(x0,x1) = not x1
+    elif challenge == 5:  # f(x0,x1) = not x1
         o.x(1)
-        o.cx(1,2)
+        o.cx(1, 2)
         o.x(1)
-    elif challenge == 6: #f(x0,x1) = x0 xor x1
-        o.cx(0,2)
-        o.cx(1,2)
-    elif challenge == 7: #f(x0,x1) = not (x0 xor x1)
-        o.cx(0,2)
-        o.cx(1,2)
+    elif challenge == 6:  # f(x0,x1) = x0 xor x1
+        o.cx(0, 2)
+        o.cx(1, 2)
+    elif challenge == 7:  # f(x0,x1) = not (x0 xor x1)
+        o.cx(0, 2)
+        o.cx(1, 2)
         o.x(2)
     else:
-        print("Oracle not implemented");
+        print("Oracle not implemented")
     return o
-        
+
+
 if __name__ == "__main__":
     main()

@@ -3,6 +3,7 @@ from qiskit.quantum_info import Statevector
 import numpy as np
 import sys
 
+
 def main():
     print(f"""
     The Amplitude Amplification algorithm will be challenged to find a
@@ -12,23 +13,22 @@ def main():
     """)
 
     s = input(f"Provide the secret s as a string of 0s and 1s: ")
-    if s and set(s) <= {'0', '1'}:
+    if s and set(s) <= {"0", "1"}:
         # Valid input
         pass
     else:
         print("Invalid input.")
         sys.exit(1)
 
-
     # Main parameters
-    n        = len(s)
+    n = len(s)
     max_iter = 25
-    thr      = 0.99 # Threshold for early stopping criteria
-    
+    thr = 0.99  # Threshold for early stopping criteria
+
     qc = QuantumCircuit(n)
     oracle = create_oracle(s)
     diffusion = create_diffusion(n)
-    
+
     # Step 0: uniform superposition
     qc.h(range(n))
     sv = Statevector(qc)
@@ -49,23 +49,24 @@ def main():
         if max_value > thr:
             print(f"Stopping after {i} iterations - threshold {thr} reached.")
             break
-        
+
 
 def create_oracle(target):
     n = len(target)
     qc = QuantumCircuit(n)
 
     for i, bit in enumerate(target):
-        if bit == '0':
+        if bit == "0":
             qc.x(n - 1 - i)
 
     qc.compose(mcz(n), inplace=True)
-    
+
     for i, bit in enumerate(target):
-        if bit == '0':
+        if bit == "0":
             qc.x(n - 1 - i)
 
     return qc
+
 
 def mcz(n):
     qc = QuantumCircuit(n)
@@ -76,6 +77,7 @@ def mcz(n):
     qc.h(n - 1)
 
     return qc
+
 
 def create_diffusion(n):
     qc = QuantumCircuit(n)

@@ -8,8 +8,9 @@ from qiskit import *
 from qiskit.quantum_info import Statevector
 import sys
 
+
 def main():
-    chl = ['f(x) = 0', 'f(x) = 1', 'f(x) = x', 'f(x) = not_x']
+    chl = ["f(x) = 0", "f(x) = 1", "f(x) = x", "f(x) = not_x"]
     print(f"""
     The Deutsch algorithm will be challenged to classify a
     binary-input binary-output function. It will use only one
@@ -23,7 +24,7 @@ def main():
     c_str = input(f"Provide your input as an index between 0 and {len(chl) - 1}: ")
     try:
         c = int(c_str)
-        assert(c < len(chl))
+        assert c < len(chl)
     except:
         print("Invalid input.")
         sys.exit(1)
@@ -51,29 +52,30 @@ def main():
     sv = Statevector(qc)
     probs = sv.probabilities_dict()
 
-    p0 = sum(v for k, v in probs.items() if k[1] == '0')  # first qubit
+    p0 = sum(v for k, v in probs.items() if k[1] == "0")  # first qubit
 
-    if p0 > 0.99: # Check is zero-state has probability \approx 1.
+    if p0 > 0.99:  # Check is zero-state has probability \approx 1.
         print(f"Function {chl[c]} has constant output.")
     else:
         print(f"Function {chl[c]} has balanced output.")
 
 
-def create_oracle(challenge:int) -> QuantumCircuit:
+def create_oracle(challenge: int) -> QuantumCircuit:
     o = QuantumCircuit(2)
-    if challenge == 0:   #f(x) = 0
+    if challenge == 0:  # f(x) = 0
         o.id(1)
-    elif challenge == 1: #f(x) = 1
+    elif challenge == 1:  # f(x) = 1
         o.x(1)
-    elif challenge == 2: #f(x) = x
-        o.cx(0,1)
-    elif challenge == 3: #f(x) = not(x)
+    elif challenge == 2:  # f(x) = x
+        o.cx(0, 1)
+    elif challenge == 3:  # f(x) = not(x)
         o.x(0)
-        o.cx(0,1)
+        o.cx(0, 1)
         o.x(0)
     else:
-        print("Oracle not implemented");
+        print("Oracle not implemented")
     return o
-        
+
+
 if __name__ == "__main__":
     main()

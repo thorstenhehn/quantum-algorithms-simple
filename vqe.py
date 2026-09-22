@@ -4,7 +4,6 @@
 # Our goal is to make this as simple as possible such that users
 # can have an easy first interaction with quantum algorithms.
 
-
 from qiskit import *
 from qiskit.quantum_info import Statevector
 import numpy as np
@@ -14,7 +13,7 @@ PAULI = {
     "I": np.array([[1, 0], [0, 1]]),
     "X": np.array([[0, 1], [1, 0]]),
     "Y": np.array([[0, -1j], [1j, 0]]),
-    "Z": np.array([[1, 0], [0, -1]])
+    "Z": np.array([[1, 0], [0, -1]]),
 }
 
 
@@ -82,6 +81,7 @@ def main():
     for i, p in enumerate(probs):
         print(f"|{i:0{n}b}>: {p:.4f}")
 
+
 def build_hamiltonian(terms):
     n = len(terms[0][1])
     dim = 2**n
@@ -96,6 +96,8 @@ def build_hamiltonian(terms):
         H += coeff * op
 
     return H
+
+
 def create_ansatz(n, theta, is_complex):
     qc = QuantumCircuit(n)
 
@@ -111,8 +113,8 @@ def create_ansatz(n, theta, is_complex):
 
         # Layer 2
         for i in range(n):
-            qc.ry(theta[2*n + i], i)
-            qc.rz(theta[3*n + i], i)
+            qc.ry(theta[2 * n + i], i)
+            qc.rz(theta[3 * n + i], i)
 
     else:
         # Layer 1
@@ -128,6 +130,7 @@ def create_ansatz(n, theta, is_complex):
             qc.ry(theta[n + i], i)
 
     return qc
+
 
 def energy(theta, H, n, is_complex):
     qc = create_ansatz(n, theta, is_complex)
@@ -154,7 +157,7 @@ def get_user_input():
     terms = []
 
     for i in range(num_terms):
-        print(f"\nTerm {i+1}")
+        print(f"\nTerm {i + 1}")
 
         try:
             coeff = float(input("  Coefficient: "))
@@ -172,8 +175,9 @@ def get_user_input():
 
     return n, terms
 
+
 def contains_Y(terms):
-    return any('Y' in p for _, p in terms)
+    return any("Y" in p for _, p in terms)
 
 
 if __name__ == "__main__":

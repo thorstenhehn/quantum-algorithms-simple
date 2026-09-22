@@ -9,6 +9,7 @@ from qiskit import *
 from qiskit.quantum_info import Statevector
 import sys
 
+
 def main():
     print(f""" The Bernstein-Vazirani problem recovers a secret
     bitstring s by using the Deutsch-Jozsa algorithm. It will use only
@@ -16,14 +17,14 @@ def main():
     f(x) = xor_over_i x_i * s_i .  """)
 
     s = input(f"Provide the secret s as a string of 0s and 1s: ")
-    if s and set(s) <= {'0', '1'}:
+    if s and set(s) <= {"0", "1"}:
         # Valid input
         pass
     else:
         print("Invalid input.")
         sys.exit(1)
 
-    l  = len(s)
+    l = len(s)
     qc = QuantumCircuit(l + 1)
 
     # Prepare qubits in |0> (input registers) and |1> (aux register) state, resp.
@@ -34,7 +35,7 @@ def main():
 
     for i in range(l + 1):
         qc.h(i)
-     
+
     # The oracle function serves as the quantum implementation of the function
     # provided in the challenge. Based on user's choice, we prepare the oracle
     # and include it into the circuit.
@@ -46,31 +47,31 @@ def main():
         qc.h(i)
     # The input registers now contain the hidden string s.
 
-        
     sv = Statevector(qc)
-    p  = sv.probabilities_dict()
+    p = sv.probabilities_dict()
 
     # Sum over auxiliary qubit as it remains in superposition
     input_p = {}
     for k, v in p.items():
-        input_bits = k[-l:]   # extract input register
+        input_bits = k[-l:]  # extract input register
         input_p[input_bits] = input_p.get(input_bits, 0) + v
 
-    # Find state with probability \approx 1        
+    # Find state with probability \approx 1
     result = max(input_p, key=input_p.get)
 
     # Reverse qiskit's bit order and output to user
-    s_est  = result[::-1]
+    s_est = result[::-1]
     print(f"Bernstein-Vazirani algorithm recovered secret string: {s_est}.")
-    
 
-def create_oracle(s:str) -> QuantumCircuit:
+
+def create_oracle(s: str) -> QuantumCircuit:
     l = len(s)
     o = QuantumCircuit(l + 1)
     for i in range(l):
-        if s[i] == '1':
+        if s[i] == "1":
             o.cx(i, l)
     return o
-        
+
+
 if __name__ == "__main__":
     main()

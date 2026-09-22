@@ -9,8 +9,9 @@ from qiskit.quantum_info import Statevector
 import numpy as np
 import sys
 
+
 def main():
-    chl = ['f(x) = 0', 'f(x) = 1', 'f(x) = x', 'f(x) = not_x']
+    chl = ["f(x) = 0", "f(x) = 1", "f(x) = x", "f(x) = not_x"]
     print(f"""
     We show the phase kickback on |x = 0> and |x = 1> depending on
     the function f(x). The key insight is that the resulting state
@@ -22,12 +23,10 @@ def main():
     2: {chl[2]}
     3: {chl[3]}
     """)
-    c_str = input(
-        f"Provide your input as an index between 0 "
-        f"and {len(chl) - 1}: ")
+    c_str = input(f"Provide your input as an index between 0 and {len(chl) - 1}: ")
     try:
         c = int(c_str)
-        assert(c < len(chl))
+        assert c < len(chl)
     except:
         print("Invalid input.")
         sys.exit(1)
@@ -50,7 +49,7 @@ def main():
     qc.compose(oracle, inplace=True)
 
     # We do NOT apply final Hadamard - phase kickback remains.
-    
+
     sv = Statevector(qc)
 
     # In qiskit notation, statevectors are |yx>: |00>, |01>, |10>, |11>.
@@ -58,25 +57,27 @@ def main():
     # from the first two statevector entries without adjustments for |y>.
     (a, b) = sv.data[0:2]
     print(
-        f"Phase kickback to |x = 0>: {np.angle(a) % (2*np.pi)}\n"
-        f"Phase kickback to |x = 1>: {np.angle(b) % (2*np.pi)}"
+        f"Phase kickback to |x = 0>: {np.angle(a) % (2 * np.pi)}\n"
+        f"Phase kickback to |x = 1>: {np.angle(b) % (2 * np.pi)}"
     )
 
-def create_oracle(challenge:int) -> QuantumCircuit:
+
+def create_oracle(challenge: int) -> QuantumCircuit:
     o = QuantumCircuit(2)
-    if challenge == 0:   #f(x) = 0
+    if challenge == 0:  # f(x) = 0
         o.id(1)
-    elif challenge == 1: #f(x) = 1
+    elif challenge == 1:  # f(x) = 1
         o.x(1)
-    elif challenge == 2: #f(x) = x
-        o.cx(0,1)
-    elif challenge == 3: #f(x) = not(x)
+    elif challenge == 2:  # f(x) = x
+        o.cx(0, 1)
+    elif challenge == 3:  # f(x) = not(x)
         o.x(0)
-        o.cx(0,1)
+        o.cx(0, 1)
         o.x(0)
     else:
-        print("Oracle not implemented");
+        print("Oracle not implemented")
     return o
-        
+
+
 if __name__ == "__main__":
     main()
