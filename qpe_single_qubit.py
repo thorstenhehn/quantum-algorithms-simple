@@ -3,23 +3,27 @@
 # simulator or backend-computer.
 # Our goal is to make this as simple as possible such that users
 # can have an easy first interaction with quantum algorithms.
+import sys
 
+import numpy as np
 from qiskit import *
 from qiskit.quantum_info import Statevector
-import numpy as np
-import sys
 
 
 def main():
-    print(f"""
+    print("""
     Single-qubit Quantum Phase Estimation (QPE) using state vector probabilities.
     """)
-    ang_str = input(f"Provide your input as an angle between 0 and pi: ")
+    ang_str = input("Provide your input as an angle between 0 and pi: ")
+
     try:
         ang = float(ang_str)
-        assert 0 <= ang < np.pi
-    except:
-        print("Invalid input.")
+    except ValueError:
+        print("Invalid input: enter a number.")
+        sys.exit(1)
+
+    if not 0 <= ang < np.pi:
+        print(f"Invalid input: enter a number between 0 and {np.pi}")
         sys.exit(1)
 
     qc = QuantumCircuit(2)

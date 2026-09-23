@@ -3,10 +3,10 @@
 # simulator or backend-computer.
 # Our goal is to make this as simple as possible such that users
 # can have an easy first interaction with quantum algorithms.
+import sys
 
 from qiskit import *
 from qiskit.quantum_info import Statevector
-import sys
 
 
 def main():
@@ -24,9 +24,12 @@ def main():
     c_str = input(f"Provide your input as an index between 0 and {len(chl) - 1}: ")
     try:
         c = int(c_str)
-        assert c < len(chl)
-    except:
-        print("Invalid input.")
+    except ValueError:
+        print("Invalid input: enter a number.")
+        sys.exit(1)
+
+    if not 0 <= c < len(chl):
+        print(f"Invalid input: enter a number between 0 and {len(chl) - 1}")
         sys.exit(1)
 
     qc = QuantumCircuit(2)

@@ -3,11 +3,11 @@
 # simulator or backend-computer.
 # Our goal is to make this as simple as possible such that users
 # can have an easy first interaction with quantum algorithms.
+import sys
 
+import numpy as np
 from qiskit import *
 from qiskit.quantum_info import Statevector
-import numpy as np
-import sys
 
 
 def main():
@@ -34,9 +34,12 @@ def main():
     idx_str = input(f"Provide your input as an index between 0 and {len(inp) - 1}: ")
     try:
         idx = int(idx_str)
-        assert idx < len(inp)
-    except:
-        print("Invalid input.")
+    except ValueError:
+        print("Invalid input: enter a number.")
+        sys.exit(1)
+
+    if not 0 <= idx < len(inp):
+        print(f"Invalid input: enter a number between 0 and {len(inp) - 1}")
         sys.exit(1)
 
     n = 4  # Use n = 4, N = 16 for demonstration purposes
@@ -50,7 +53,7 @@ def main():
     qc.compose(s, inplace=True)
 
     # Print input signals
-    print(f"State vector of QFT input:")
+    print("State vector of QFT input:")
     print_sv(qc)
 
     # QFT
@@ -58,7 +61,7 @@ def main():
     qc.compose(qft, inplace=True)
 
     # Print output signals
-    print(f"\nState vector of QFT output:")
+    print("\nState vector of QFT output:")
     print_sv(qc)
 
 

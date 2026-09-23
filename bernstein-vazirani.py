@@ -4,19 +4,19 @@
 # backend-computer.  Our goal is to make this as simple as possible
 # such that users can have an easy first interaction with quantum
 # algorithms.
+import sys
 
 from qiskit import *
 from qiskit.quantum_info import Statevector
-import sys
 
 
 def main():
-    print(f""" The Bernstein-Vazirani problem recovers a secret
+    print(""" The Bernstein-Vazirani problem recovers a secret
     bitstring s by using the Deutsch-Jozsa algorithm. It will use only
     one query to the oracle, with f(x) chosen as
     f(x) = xor_over_i x_i * s_i .  """)
 
-    s = input(f"Provide the secret s as a string of 0s and 1s: ")
+    s = input("Provide the secret s as a string of 0s and 1s: ")
     if s and set(s) <= {"0", "1"}:
         # Valid input
         pass

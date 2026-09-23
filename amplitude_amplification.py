@@ -1,18 +1,19 @@
+import sys
+
+import numpy as np
 from qiskit import *
 from qiskit.quantum_info import Statevector
-import numpy as np
-import sys
 
 
 def main():
-    print(f"""
+    print("""
     The Amplitude Amplification algorithm will be challenged to find a
     secret good state s. It will use an oracle marking the good state
     and diffusion in a loop with a maximum number of iterations and
     a threshold-based early stopping criteria.
     """)
 
-    s = input(f"Provide the secret s as a string of 0s and 1s: ")
+    s = input("Provide the secret s as a string of 0s and 1s: ")
     if s and set(s) <= {"0", "1"}:
         # Valid input
         pass

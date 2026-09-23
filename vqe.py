@@ -3,11 +3,11 @@
 # simulator or backend-computer.
 # Our goal is to make this as simple as possible such that users
 # can have an easy first interaction with quantum algorithms.
+import sys
 
+import numpy as np
 from qiskit import *
 from qiskit.quantum_info import Statevector
-import numpy as np
-import sys
 
 PAULI = {
     "I": np.array([[1, 0], [0, 1]]),
@@ -16,12 +16,16 @@ PAULI = {
     "Z": np.array([[1, 0], [0, -1]]),
 }
 
+MAX_QUBITS = 3
+MAX_TERMS = 3
+
 
 def main():
-    print("""
+    print(f"""
     Simple demonstration of Variational Quantum Eigensolver (VQE).
     Limitations:
-    - Up to 3 qubits
+    - Up to {MAX_QUBITS} qubits
+    - Up to {MAX_TERMS} terms
     - Random search
     """)
 
@@ -141,17 +145,23 @@ def energy(theta, H, n, is_complex):
 
 def get_user_input():
     try:
-        n = int(input("Number of qubits (e.g. 3): "))
-        assert 0 < n <= 3
-    except:
-        print("Invalid number of qubits.")
+        n = int(input(f"Number of qubits (up to {MAX_QUBITS}): "))
+    except ValueError:
+        print("Invalid input: enter a number.")
+        sys.exit(1)
+
+    if not 0 <= n <= MAX_QUBITS:
+        print(f"Invalid input: enter a number between 0 and {MAX_QUBITS}")
         sys.exit(1)
 
     try:
-        num_terms = int(input("Number of Hamiltonian terms (e.g. 2): "))
-        assert num_terms > 0
-    except:
-        print("Invalid number of terms.")
+        num_terms = int(input(f"Number of Hamiltonian terms (up to {MAX_TERMS}): "))
+    except ValueError:
+        print("Invalid input: enter a number.")
+        sys.exit(1)
+
+    if not 0 <= num_terms <= MAX_TERMS:
+        print(f"Invalid input: enter a number between 0 and {MAX_TERMS}")
         sys.exit(1)
 
     terms = []
@@ -160,15 +170,17 @@ def get_user_input():
         print(f"\nTerm {i + 1}")
 
         try:
-            coeff = float(input("  Coefficient: "))
-        except:
-            print("Invalid coefficient.")
+            coeff = float(input(" Numerical coefficient: "))
+        except ValueError:
+            print("Invalid input: enter a number.")
             sys.exit(1)
 
-        pstring = input(f"  Pauli string (length {n}, e.g. ZIX): ").upper()
+        pstring = input(
+            f"  Pauli string (length {n}, composed of I, X, Y, Z): "
+        ).upper()
 
         if len(pstring) != n or any(p not in "IXYZ" for p in pstring):
-            print("Invalid Pauli string.")
+            print(f"Invalid input: enter a Pauli string (I, X, Y, Z, length {n}).")
             sys.exit(1)
 
         terms.append((coeff, pstring))
