@@ -6,7 +6,7 @@ on:
 
 jobs:
   quality:
-    name: Format Python
+    name: Format and lint python scripts
     runs-on: ubuntu-latest
 
     steps:
